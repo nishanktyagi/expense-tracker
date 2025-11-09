@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Expense Tracker</title>
+    <style>
+      body {
+        background-color: #0f0f16;
+        display: flex;
+        align-items: center;
+        height: 100vh;
+        justify-content: center;
+      }
+      .card-container {
+        background-color: #1a1a27;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 50px 30px;
+        border: 1px solid #fff;
+        border-radius: 25px;
+        width: max-content;
+      }
+      .item {
+        display: flex;
+        flex-direction: column;
+      }
+      h1,
+      h2 {
+        color: #fff;
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 24px;
+      }
+      ::placeholder {
+        color: #fff;
+      }
+      input,
+      button {
+        min-width: 300px;
+        padding: 10px;
+        background-color: #9b5cff;
+        color: #fff;
+        border-radius: 5px;
+        margin-bottom: 20px;
+      }
+      button {
+        background: #9b5cff;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card-container">
+      <h1>Expense Tracker</h1>
+      <div class="item">
+        <input type="text" name="Amout" placeholder="Amout" id="amount" />
+        <input
+          type="text"
+          name="Description"
+          placeholder="Description"
+          id="description"
+        />
+        <button onclick="getExpense()">Add Expense</button>
+      </div>
+      <h2>Expense List</h2>
+      <ul
+        id="expenseListContainer"
+        style="margin-bottom: 20px; padding-left: 10px; width: 100%"
+      ></ul>
+    </div>
+  </body>
+  <script>
+    let expenses = [];
+
+    function getExpense() {
+      let amount = document.getElementById("amount").value;
+      let description = document.getElementById("description").value;
+
+      let expense = {
+        // id: Date.now(),
+        amount: Number(amount),
+        description: String(description),
+      };
+      expenses.push(expense);
+
+      console.log(expenses);
+      document.getElementById("amount").value = "";
+      document.getElementById("description").value = "";
+      renderExpense();
+    }
+
+    function renderExpense() {
+      let expenseListContainer = document.getElementById(
+        "expenseListContainer"
+      );
+      expenseListContainer.innerHTML = "";
+
+      expenses.map((expense, index) => {
+        expenseListContainer.innerHTML += `<li style="display: flex; justify-content: space-between; color: #fff; margin-bottom: 10px;"> <span>Rs${expense.amount} - ${expense.description} </span> <span class="closeBtn" onclick=deleteExpense(${index})>&#120</span></li>`;
+      });
+    }
+    function deleteExpense(index) {
+      expenses.splice(index,1);
+      renderExpense();
+    }
+  </script>
+</html>
