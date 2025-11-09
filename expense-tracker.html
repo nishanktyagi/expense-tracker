@@ -64,45 +64,64 @@
         />
         <button onclick="getExpense()">Add Expense</button>
       </div>
-      <h2>Expense List</h2>
+      <!-- <h2>Expense List</h2> -->
       <ul
         id="expenseListContainer"
-        style="margin-bottom: 20px; padding-left: 10px; width: 100%"
+        style="margin-bottom: 0px; padding-left: 10px; width: 100%"
       ></ul>
     </div>
   </body>
   <script>
     let expenses = [];
+    let expenseListContainer = document.getElementById("expenseListContainer");
+    const mainWrapper = document.getElementsByClassName("card-container")[0];
+
+    const createExpenseHeading = document.createElement("h2");
+    createExpenseHeading.style.width = "100%";
+    createExpenseHeading.style.textAlign = "left";
+    createExpenseHeading.style.color = "#fff";
+    createExpenseHeading.innerText = "Expense List";
+    expenseListContainer.insertBefore(createExpenseHeading);
+
+
 
     function getExpense() {
       let amount = document.getElementById("amount").value;
       let description = document.getElementById("description").value;
 
       let expense = {
-        // id: Date.now(),
         amount: Number(amount),
         description: String(description),
       };
-      expenses.push(expense);
 
-      console.log(expenses);
+      expenses.push(expense);
       document.getElementById("amount").value = "";
       document.getElementById("description").value = "";
       renderExpense();
     }
 
     function renderExpense() {
-      let expenseListContainer = document.getElementById(
-        "expenseListContainer"
-      );
+
+     
+
       expenseListContainer.innerHTML = "";
 
       expenses.map((expense, index) => {
-        expenseListContainer.innerHTML += `<li style="display: flex; justify-content: space-between; color: #fff; margin-bottom: 10px;"> <span>Rs${expense.amount} - ${expense.description} </span> <span class="closeBtn" onclick=deleteExpense(${index})>&#120</span></li>`;
+        expenseListContainer.innerHTML += `<li style="display: flex; justify-content: space-between; color: #fff; margin-bottom: 10px;"> <span>Rs ${expense.amount} - ${expense.description} </span> <span class="closeBtn" onclick=deleteExpense(${index})>&#120</span></li>`;
       });
+
+      let totalAmountArray = expenses.map((expense) => expense.amount);
+      let totalValue = totalAmountArray.reduce((accumulator, currentValue) => {
+        return accumulator + currentValue;
+      });
+
+      totalExpenseDiv.innerHTML += `Total Expense :  ${totalValue}`;
+      expenseListContainer.appendChild(totalExpenseDiv);
+
+      mainWrapper.appendChild(totalExpenseDiv);
     }
     function deleteExpense(index) {
-      expenses.splice(index,1);
+      expenses.splice(index, 1);
       renderExpense();
     }
   </script>
