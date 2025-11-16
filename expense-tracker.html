@@ -64,7 +64,7 @@
         />
         <button onclick="getExpense()">Add Expense</button>
       </div>
-      <!-- <h2>Expense List</h2> -->
+
       <ul
         id="expenseListContainer"
         style="margin-bottom: 0px; padding-left: 10px; width: 100%"
@@ -72,57 +72,70 @@
     </div>
   </body>
   <script>
-    let expenses = [];
-    let expenseListContainer = document.getElementById("expenseListContainer");
-    const mainWrapper = document.getElementsByClassName("card-container")[0];
+     let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
 
-    const createExpenseHeading = document.createElement("h2");
-    createExpenseHeading.style.width = "100%";
-    createExpenseHeading.style.textAlign = "left";
-    createExpenseHeading.style.color = "#fff";
-    createExpenseHeading.innerText = "Expense List";
-    expenseListContainer.insertBefore(createExpenseHeading);
+  let expenseListContainer = document.getElementById("expenseListContainer");
+  const mainWrapper = document.getElementsByClassName("card-container")[0];
 
+  // Heading
+  const createExpenseHeading = document.createElement("h2");
+  createExpenseHeading.style.width = "100%";
+  createExpenseHeading.style.textAlign = "left";
+  createExpenseHeading.style.color = "#fff";
+  createExpenseHeading.innerText = "Expense List";
+  mainWrapper.insertBefore(createExpenseHeading, expenseListContainer);
 
+  // Total Expense Heading
+  let totalExpenseDiv = document.createElement("h2");
+  totalExpenseDiv.id = "totalExpense";
+  mainWrapper.appendChild(totalExpenseDiv);
 
-    function getExpense() {
-      let amount = document.getElementById("amount").value;
-      let description = document.getElementById("description").value;
+  function getExpense() {
+    let amount = document.getElementById("amount").value;
+    let description = document.getElementById("description").value;
 
-      let expense = {
-        amount: Number(amount),
-        description: String(description),
-      };
+    let expense = {
+      amount: Number(amount),
+      description: description,
+    };
 
-      expenses.push(expense);
-      document.getElementById("amount").value = "";
-      document.getElementById("description").value = "";
-      renderExpense();
-    }
+    expenses.push(expense);
+    localStorage.setItem("expenses", JSON.stringify(expenses));
 
-    function renderExpense() {
+    document.getElementById("amount").value = "";
+    document.getElementById("description").value = "";
 
-     
+    renderExpense();
+  }
 
-      expenseListContainer.innerHTML = "";
+  function renderExpense() {
 
-      expenses.map((expense, index) => {
-        expenseListContainer.innerHTML += `<li style="display: flex; justify-content: space-between; color: #fff; margin-bottom: 10px;"> <span>Rs ${expense.amount} - ${expense.description} </span> <span class="closeBtn" onclick=deleteExpense(${index})>&#120</span></li>`;
-      });
+    expenseListContainer.innerHTML = "";
 
-      let totalAmountArray = expenses.map((expense) => expense.amount);
-      let totalValue = totalAmountArray.reduce((accumulator, currentValue) => {
-        return accumulator + currentValue;
-      });
+    expenses.forEach((expense, index) => {
+      expenseListContainer.innerHTML += `
+        <li style="display:flex; justify-content:space-between; color:#fff; margin-bottom:10px;">
+          <span>Rs ${expense.amount} - ${expense.description}</span>
+          <span class="closeBtn" onclick="deleteExpense(${index})" style="cursor: pointer; font-size: 22px;">&#215;</span>
+        </li>
+      `;
+    });
 
-      totalExpenseDiv.innerHTML += `Total Expense :  ${totalValue}`;
-      expenseListContainer.appendChild(totalExpenseDiv);
+    totalExpense();
+  }
 
-      mainWrapper.appendChild(totalExpenseDiv);
-    }
-    function deleteExpense(index) {
-      expenses.splice(index, 1);
-      renderExpense();
-    }
+  function totalExpense() {
+    let total = expenses.reduce((acc, cur) => acc + cur.amount, 0);
+    totalExpenseDiv.innerText = `Total Expense : ${total}`;
+  }
+
+  function deleteExpense(index) {
+    expenses.splice(index, 1);
+    localStorage.setItem("expenses", JSON.stringify(expenses));
+    renderExpense();
+  }
+
+  // FIX 2: Call renderExpense() on page load
+  renderExpense();
   </script>
 </html>
