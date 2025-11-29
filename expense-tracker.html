@@ -101,7 +101,7 @@
         amount: Number(amount),
         description: description,
       };
-      if (amount == 0 && description == "")  return;
+      if (amount === ""  || description == "")  return;
 
       expenses.push(expense);
       localStorage.setItem("expenses", JSON.stringify(expenses));
